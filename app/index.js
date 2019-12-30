@@ -1,14 +1,19 @@
 const Koa = require('koa');
-const bodyparser = require('koa-bodyparser');//接受post参数
+const koaBody = require('koa-body');//接受post参数
 const error = require('koa-json-error');//统一处理错误 
 const parameter = require('koa-parameter');//校验参数
 const mongoose = require('mongoose');//db
+const koaStatic = require('koa-static');//设置静态文件目录
+const path = require('path');
 const routing = require('./routes');//所有路由
 const {connectionStr} = require('./config');//所有路由
 const app = new Koa();
 
-mongoose.connect(connectionStr,{ useNewUrlParser: true,useUnifiedTopology: true },() => console.log('connect success...'))
-mongoose.connection.on('error',() =>console.log('connect error...'))
+mongoose.connect(connectionStr, {
+  useNewUrlParser: true, useUnifiedTopology: true,
+  'useFindAndModify': false
+}, () => console.log('connect success...'))
+mongoose.connection.on('error', () => console.log('connect error...'))
 /* app.use((ctx) => {
     ctx.body = 'Hellow World and zhihu';
 })
@@ -28,6 +33,8 @@ mongoose.connection.on('error',() =>console.log('connect error...'))
 }) */
 
 
+/*
+//报错
 app.use(async (ctx, next) => {
     try {
         await next();
@@ -38,13 +45,22 @@ app.use(async (ctx, next) => {
             message: err.message
         };
     }
-})
+})*/
 
+//设置静态目录 中间件生成图片链接
+app.use(koaStatic(path.join(__dirname,'public')));
 
 app.use(error({
-    postFormat: (e, { stack, ...rest }) => process.env.NODE_ENV === 'production' ? rest : { stack, ...rest }
+  postFormat: (e, {stack, ...rest}) => process.env.NODE_ENV === 'production' ? rest : {stack, ...rest}
 }))
-app.use(bodyparser())
+
+app.use(koaBody({
+  multipart: true,//支持文件格式
+  formidable: {//上传到目录
+    uploadDir: path.join(__dirname, '/public/uploads'),
+    keepExtensions: true //保证拓展名称 如jpg png
+  },
+}))
 app.use(parameter(app))
 routing(app);
 
