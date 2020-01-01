@@ -4,7 +4,7 @@ const jwt = require('koa-jwt');
 const {secret} = require('../config');
 
 const router = new Router({ prefix: '/users' });
-const { find, findById, create, update, delete:del, login, checkOwner } = require('../controllers/users');
+const { find, findById, create, update, delete:del, login, checkOwner,listFollowing,follow } = require('../controllers/users');
 
 /* 自己写的 中间件 校验拦截*/
 /* const auth = async(ctx,next) => {
@@ -38,5 +38,9 @@ router.patch('/:id',auth,checkOwner, update);
 router.delete('/:id',auth,checkOwner, del);
 
 router.post('/login', login);
+
+router.get('/:id/following', listFollowing);
+
+router.put('/following/:id',auth, follow);
 
 module.exports = router;

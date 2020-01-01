@@ -25,6 +25,10 @@ const userSchema = new Schema({
             entrance_year:{type: Number},//入学年份
             graduation_year:{type: Number}//毕业年份
         }],select:false
+    },
+    following: {//关注了谁 id  Schema.Types.ObjectId
+        type:[{type:Schema.Types.ObjectId,ref:'User'}],
+        select:false //select:false 默认不显示
     }
 });
 
