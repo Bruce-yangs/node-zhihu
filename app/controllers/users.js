@@ -25,7 +25,7 @@ class UserCtl {
   //查找某一个用户详情
   async findById(ctx) {
     //前端请求url http://xxxx?fields=locations;business
-    const {fields} = ctx.query;
+    const {fields = 'bb'} = ctx.query;
     //RESTful API 过滤掉不需要的参数 select(‘ +locations +business’)  以空格+号 格式
     const selectFields = fields.split(';').filter(f => f).map(item => ' +' + item).join('');
 

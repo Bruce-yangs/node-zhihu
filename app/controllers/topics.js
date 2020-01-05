@@ -10,7 +10,7 @@ class TopicsCtl {
   }*/
   //校验是否有该用户
   async checkUserExist(ctx, next) {
-    const user = await User.findById(ctx.params.id);
+    const user = await Topics.findById(ctx.params.id);
     if (!user) {ctx.throw(404,'用户不存在');}
     await next();
   }
@@ -23,7 +23,7 @@ class TopicsCtl {
   //查找某一个话题详情
   async findById(ctx) {
     //前端请求url http://xxxx?fields=locations;business
-    const {fields} = ctx.query;
+    const {fields = ''} = ctx.query;
     //RESTful API 过滤掉不需要的参数 select(‘ +locations +business’)  以空格+号 格式
     const selectFields = fields.split(';').filter(f => f).map(item => ' +' + item).join('');
 
