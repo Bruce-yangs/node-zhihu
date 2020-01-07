@@ -19,7 +19,12 @@ class UserCtl {
 
   //查找相关的列表数据
   async find(ctx) {
-    ctx.body = await User.find();
+    //Math.max(1,2,3) => 返回3 最大的     limit(10)只返回10条   skip(10) 跳过第一页的10条
+    const {per_page = 10,page} =  ctx.query;
+    const pageNum =  Math.max(page * 1 ,1)- 1;
+    const perPage = Math.max(per_page * 1,1);
+                  //new RegExp(ctx.query.q) 模糊搜索
+    ctx.body = await User.find({name:new RegExp(ctx.query.q)}).limit(perPage).skip(pageNum * perPage);
   }
 
   //查找某一个用户详情
@@ -28,8 +33,19 @@ class UserCtl {
     const {fields = 'bb'} = ctx.query;
     //RESTful API 过滤掉不需要的参数 select(‘ +locations +business’)  以空格+号 格式
     const selectFields = fields.split(';').filter(f => f).map(item => ' +' + item).join('');
+    //所有属性都是 话题
+    const populateStr = fields.split(';').filter(f => f).map(item => {
+      if (item === 'employments') {
+        return 'employments.company employments.job';
+      }
+      if (item === 'educations') {
+        return 'educations.school educations.major';
+      }
+      return item;
+    }).join(' ');
 
-    const user = await User.findById(ctx.params.id).select(selectFields);
+    const user = await User.findById(ctx.params.id).select(selectFields)
+      .populate(populateStr);
     if (!user) {
       ctx.throw(404, '用户不存在');
     }
@@ -100,7 +116,7 @@ class UserCtl {
     const user = await User.findById(ctx.params.id).select('+following').populate('following');
     console.log(user);
     if (!user) {
-      ctx.throw(404);
+      ctx.throw(404,'用户不存在');
     }
     ctx.body = user.following;
   }
@@ -126,6 +142,38 @@ class UserCtl {
     const index = me.following.map(id => id.toString()).indexOf(ctx.params.id);
     if (index >-1) {
       me.following.splice(index,1);
+      me.save();
+    }
+    ctx.status = 204;
+  }
+
+  //获取话题关注的列表信息
+  async listFollowingTopics(ctx) {
+    //populate('following')获取相关信息
+    const user = await User.findById(ctx.params.id).select('+followingTopics').populate('followingTopics');
+    console.log(user);
+    if (!user) {
+      ctx.throw(404,'用户不存在');
+    }
+    ctx.body = user.followingTopics;
+  }
+  //关注话题
+  async followTopic(ctx) {                       //populate('following')获取相关信息
+    const me = await User.findById(ctx.state.user._id).select('+followingTopics');
+    if (!me.followingTopics.map(id => id.toString()).includes(ctx.params.id)) {
+      //如果没有关注过话题 就把新的话题id push到话题组里
+      me.followingTopics.push(ctx.params.id);
+      me.save();
+    }
+    ctx.status = 204;
+  }
+
+  //取消关注话题
+  async unfollowTopic(ctx) {                       //populate('following')获取相关信息
+    const me = await User.findById(ctx.state.user._id).select('+followingTopics');
+    const index = me.followingTopics.map(id => id.toString()).indexOf(ctx.params.id);
+    if (index >-1) {
+      me.followingTopics.splice(index,1);
       me.save();
     }
     ctx.status = 204;

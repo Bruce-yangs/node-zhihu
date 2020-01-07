@@ -2,10 +2,12 @@ const Router = require('koa-router');
 const jwt = require('koa-jwt');
 // const jsonwebtoken = require('jsonwebtoken');
 const {secret} = require('../config');
+const {checkTopicExist} = require('../controllers/topics');
 
 const router = new Router({ prefix: '/users' });// prefix 路由前缀
 const { find, findById, create, update, delete:del,
-  login, checkOwner,listFollowing,follow,unfollow,listFollowers,checkUserExist } = require('../controllers/users');
+  login, checkOwner,listFollowing,follow,unfollow,listFollowers,
+  followTopic,unfollowTopic,listFollowingTopics,checkUserExist } = require('../controllers/users');
 
 /* 自己写的 中间件 校验拦截*/
 /* const auth = async(ctx,next) => {
@@ -57,5 +59,14 @@ router.put('/following/:id',auth, checkUserExist, follow);
 
 //取消关注
 router.delete('/following/:id',auth, checkUserExist, unfollow);
+
+//获取某用户关注话题
+router.get('/:id/followTopic', listFollowingTopics);
+
+//关注话题
+router.put('/followTopics/:id',checkTopicExist, followTopic);
+
+//取消关注话题
+router.delete('/followTopics/:id',checkTopicExist, unfollowTopic);
 
 module.exports = router;

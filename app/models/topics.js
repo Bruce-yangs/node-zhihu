@@ -8,5 +8,4 @@ const topicsSchema = new Schema({
     avatar_url: {type: String},
     introduction: {type: String,select:false},//简介
 });
-
-module.exports = model('Topics', topicsSchema);
+module.exports = model('Topic', topicsSchema);
