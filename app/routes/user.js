@@ -64,9 +64,9 @@ router.delete('/following/:id',auth, checkUserExist, unfollow);
 router.get('/:id/followTopic', listFollowingTopics);
 
 //关注话题
-router.put('/followTopics/:id',checkTopicExist, followTopic);
+router.put('/followingTopics/:id',checkTopicExist, followTopic);
 
 //取消关注话题
-router.delete('/followTopics/:id',checkTopicExist, unfollowTopic);
+router.delete('/followingTopics/:id',checkTopicExist, unfollowTopic);
 
 module.exports = router;
