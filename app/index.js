@@ -12,8 +12,11 @@ const app = new Koa();
 mongoose.connect(connectionStr, {
   useNewUrlParser: true, useUnifiedTopology: true,
   'useFindAndModify': false
-}, () => console.log('connect success...'))
-mongoose.connection.on('error', () => console.log('connect error...'))
+}, () => console.log('connect success...连接成功'))
+mongoose.connection.on('error', (e) => {
+  console.log(e);
+  console.log('connect error...')
+})
 /* app.use((ctx) => {
     ctx.body = 'Hellow World and zhihu';
 })
