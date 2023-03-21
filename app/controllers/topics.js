@@ -21,6 +21,7 @@ class TopicsCtl {
   //查找相关的话题数据
   async find(ctx) {    //Math.max(1,2,3) => 返回3 最大的     limit(10)只返回10条   skip(10) 跳过第一页的10条
     const {per_page = 10, page} = ctx.query;
+    // const {per_page = 10, page} = ctx.query;
     const pageNum = Math.max(page * 1, 1) - 1;
     const perPage = Math.max(per_page * 1, 1);
     ctx.body = await Topics

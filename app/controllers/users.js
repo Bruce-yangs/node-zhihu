@@ -68,7 +68,7 @@ class UserCtl {
   //创建账户
   async create(ctx) {
     //统一校验参数 parameter verifyParams
-    console.log('=============12');
+    console.log("=============12");
     ctx.verifyParams({
       name: { type: "string", required: true }, //required 默认也为true
       password: { type: "string", required: true },
@@ -105,7 +105,7 @@ class UserCtl {
   async delete(ctx) {
     const user = await User.findByIdAndRemove(ctx.params.id);
     user ? (ctx.body = { msg: "删除成功" }) : ctx.throw(404, "用户不存在");
-  } 
+  }
 
   //登陆校验及生成token
   async login(ctx) {
