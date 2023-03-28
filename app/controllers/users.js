@@ -144,6 +144,7 @@ class UserCtl {
   //关注某人
   async follow(ctx) {
     //populate('following')获取相关信息
+    console.log(ctx.state);
     const me = await User.findById(ctx.state.user._id).select("+following");
     if (!me.following.map((id) => id.toString()).includes(ctx.params.id)) {
       me.following.push(ctx.params.id);
@@ -181,6 +182,9 @@ class UserCtl {
   //关注话题
   async followTopic(ctx) {
     //populate('following')获取相关信息
+    console.log('ctx.state================================================================');
+    console.log(ctx);
+    console.log(ctx.state);
     const me = await User.findById(ctx.state.user._id).select(
       "+followingTopics"
     );

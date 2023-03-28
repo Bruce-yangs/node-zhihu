@@ -1,4 +1,5 @@
 const Topics = require('../models/topics');
+const User = require('../models/user');
 
 class TopicsCtl {
   //校验是否是当前用户
@@ -36,6 +37,8 @@ class TopicsCtl {
     //RESTful API 过滤掉不需要的参数 select(‘ +locations +business’)  以空格+号 格式
     const selectFields = fields.split(';').filter(f => f).map(item => ' +' + item).join('');
 
+    console.log('selectFields================================');
+    console.log(selectFields);
     const topics = await Topics.findById(ctx.params.id).select(selectFields);
     if (!topics) {
       ctx.throw(404, '用户不存在');
@@ -51,14 +54,14 @@ class TopicsCtl {
       avatar_url: {type: 'string', required: false},
       introduction: {type: 'string', required: false},
     });
-    /*const {name} = ctx.request.body;
+    const {name} = ctx.request.body;
     const repeatedUser = await Topics.findOne({name});
 
     if (repeatedUser) {
-        ctx.throw(409, '用户已经占用')
-    }*/
+        ctx.throw(409, '话题已经占用')
+    }
 
-    const topics = await new Topics(ctx.request.body).save();
+    const topics = await new Topics(ctx.request.body).populate('name').save();
     ctx.body = topics;
 
   }

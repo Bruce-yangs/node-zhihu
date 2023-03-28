@@ -49,7 +49,7 @@ const userSchema = new Schema({
     select: false, //select:false 默认不显示
   },
   followingTopics: {
-    //关注了话题  Schema.Types.ObjectId
+    //关注了话题  Schema.Types.ObjectId 多对多
     type: [{ type: Schema.Types.ObjectId, ref: "Topic" }],
     select: false, //select:false 默认不显示
   },

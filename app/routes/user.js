@@ -61,12 +61,14 @@ router.put('/following/:id',auth, checkUserExist, follow);
 router.delete('/following/:id',auth, checkUserExist, unfollow);
 
 //获取某用户关注话题
-router.get('/:id/followTopic', listFollowingTopics);
+// router.get('/:id/followTopic', listFollowingTopics);
+router.get('/:id/followingTopics', listFollowingTopics);
+
 
 //关注话题
-router.put('/followingTopics/:id',checkTopicExist, followTopic);
+router.put('/followingTopics/:id',auth,checkTopicExist, followTopic);
 
 //取消关注话题
-router.delete('/followingTopics/:id',checkTopicExist, unfollowTopic);
+router.delete('/followingTopics/:id',auth,checkTopicExist, unfollowTopic);
 
 module.exports = router;
