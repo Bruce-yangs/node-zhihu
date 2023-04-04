@@ -7,7 +7,7 @@ const {checkTopicExist} = require('../controllers/topics');
 const router = new Router({ prefix: '/users' });// prefix 路由前缀
 const { find, findById, create, update, delete:del,
   login, checkOwner,listFollowing,follow,unfollow,listFollowers,
-  followTopic,unfollowTopic,listFollowingTopics,checkUserExist } = require('../controllers/users');
+  followTopic,unfollowTopic,listFollowingTopics,checkUserExist,listQuestions } = require('../controllers/users');
 
 /* 自己写的 中间件 校验拦截*/
 /* const auth = async(ctx,next) => {
@@ -64,6 +64,8 @@ router.delete('/following/:id',auth, checkUserExist, unfollow);
 // router.get('/:id/followTopic', listFollowingTopics);
 router.get('/:id/followingTopics', listFollowingTopics);
 
+//某用户问题列表
+router.get('/:id/questions', listQuestions);
 
 //关注话题
 router.put('/followingTopics/:id',auth,checkTopicExist, followTopic);

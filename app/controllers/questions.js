@@ -22,7 +22,16 @@ class QuestionCtl {
     await next();
   }
 
-  //查找相关的话题数据
+  //更新问题  相关参数信息
+  async checkQuestioner(ctx, next) {
+    const { question } = await ctx.state;
+    if (question.questioner.toString() !== ctx.state.user._id) {
+      ctx.throw(403, "没有权限");
+    }
+    await next();
+  }
+
+  //查找相关的问题数据
   async find(ctx) {
     //Math.max(1,2,3) => 返回3 最大的     limit(10)只返回10条   skip(10) 跳过第一页的10条
     const { per_page = 10, page } = ctx.query;
@@ -31,13 +40,13 @@ class QuestionCtl {
     const perPage = Math.max(per_page * 1, 1);
 
     const q = new RegExp(ctx.query.q);
-    ctx.body = await Question.find({ name: new RegExp(ctx.query.q) }) //模糊搜索  多项模糊搜索 $or: [{ title: q }, { description: q }]
+    ctx.body = await Question.find({ title: new RegExp(ctx.query.q) }) //模糊搜索  多项模糊搜索 $or: [{ title: q }, { description: q }]
       .find({ $or: [{ title: q }, { description: q }] })
       .limit(perPage)
       .skip(pageNum * perPage);
   }
 
-  //查找某一个话题详情
+  //查找某一个问题详情
   async findById(ctx) {
     //前端请求url http://xxxx?fields=locations;business
     const { fields = "" } = ctx.query;
@@ -50,16 +59,16 @@ class QuestionCtl {
 
     console.log("selectFields================================");
     console.log(selectFields);
-    const Question = await Question.findById(ctx.params.id).select(
+    const QuestionResult = await Question.findById(ctx.params.id).select(
       selectFields
     ).populate('questioner');
-    if (!Question) {
-      ctx.throw(404, "用户不存在");
+    if (!QuestionResult) {
+      ctx.throw(404, "问题不存在");
     }
-    ctx.body = Question;
+    ctx.body = QuestionResult;
   }
 
-  //创建话题
+  //创建问题
   async create(ctx) {
     //统一校验参数 parameter verifyParams
     ctx.verifyParams({
@@ -73,16 +82,15 @@ class QuestionCtl {
     //   ctx.throw(409, "问题已经占用");
     // }
 
-    const Question = await new Question({
+    const question = await new Question({
       ...ctx.request.body,
       questioner: ctx.state.user._id,
     })
-      .populate("name")
-      .save();
-    ctx.body = Question;
+    question.save();
+    ctx.body = question;
   }
 
-  //更新话题  相关参数信息
+  //更新问题  相关参数信息
   async update(ctx) {
     ctx.verifyParams({
       title: { type: "string", required: true }, //required 默认也为true
@@ -92,14 +100,6 @@ class QuestionCtl {
     ctx.body = ctx.state.question;
   }
 
-  //更新话题  相关参数信息
-  async checkQuestioner(ctx, next) {
-    const { question } = await ctx.state;
-    if (question.questioner.toString() !== ctx.state.user._id) {
-      ctx.throw(403, "没有权限");
-    }
-    await next();
-  }
 
   //删除问题  相关参数信息
   async delete(ctx) {
