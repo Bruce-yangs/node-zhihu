@@ -1,7 +1,7 @@
 const Router = require('koa-router');
 const jwt = require('koa-jwt');
 const router = new Router({ prefix: '/topics' });// prefix 路由前缀
-const { find, findById, create, update,listFollowers,checkTopicExist, delete:del} = require('../controllers/topics');
+const { find, findById, create, update,listFollowers,checkTopicExist,listQuestions, delete:del} = require('../controllers/topics');
 const {secret} = require('../config');
 
 //用koa-jwt 中间件 校验拦截
@@ -21,6 +21,9 @@ router.patch('/:id',auth,checkTopicExist,update);
 
 //获取关注该话题的 用户列表
 router.get('/:id/followers',checkTopicExist,listFollowers);
+
+//获取话题下的相关问题
+router.get('/:id/questions',checkTopicExist,listQuestions);
 
 
 

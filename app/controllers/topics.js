@@ -1,5 +1,6 @@
 const Topics = require('../models/topics');
 const User = require('../models/user');
+const Question = require('../models/questions');
 
 class TopicsCtl {
   //校验是否是当前用户
@@ -81,6 +82,11 @@ class TopicsCtl {
   async listFollowers(ctx) {
     const user = await User.find({followingTopics: ctx.params.id});
     ctx.body = user;
+  }
+  //获取话题对应的问题
+  async listQuestions(ctx) {
+    const questions = await Question.find({topics: ctx.params.id});
+    ctx.body = questions;
   }
 }
 

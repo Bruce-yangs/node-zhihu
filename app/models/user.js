@@ -53,6 +53,21 @@ const userSchema = new Schema({
     type: [{ type: Schema.Types.ObjectId, ref: "Topic" }],
     select: false, //select:false 默认不显示
   },
+  likingAnswers: {
+    //赞
+    type: [{ type: Schema.Types.ObjectId, ref: "Answer" }],
+    select: false, //select:false 默认不显示
+  },
+  dislikingAnswers: {
+    //踩
+    type: [{ type: Schema.Types.ObjectId, ref: "Answer" }],
+    select: false, //select:false 默认不显示
+  },
+  collectingAnswers: {
+    //收藏答案
+    type: [{ type: Schema.Types.ObjectId, ref: "Answer" }],
+    select: false, //select:false 默认不显示
+  }
 });
 
 module.exports = model("User", userSchema);

@@ -1,6 +1,7 @@
 const jsonwebtoken = require("jsonwebtoken");
 const User = require("../models/user");
 const Question = require("../models/questions");
+const Answer = require("../models/answers");
 const { secret } = require("../config");
 
 class UserCtl {
@@ -183,7 +184,9 @@ class UserCtl {
   //关注话题
   async followTopic(ctx) {
     //populate('following')获取相关信息
-    console.log('ctx.state================================================================');
+    console.log(
+      "ctx.state================================================================"
+    );
     console.log(ctx);
     console.log(ctx.state);
     const me = await User.findById(ctx.state.user._id).select(
@@ -215,13 +218,140 @@ class UserCtl {
     ctx.status = 204;
   }
 
-    //问题列表
+  //问题列表
   async listQuestions(ctx) {
-    const questions = await Question.find({questioner: ctx.params.id});
-    ctx.boady = questions;
+    const questions = await Question.find({ questioner: ctx.params.id });
+    ctx.body = questions;
+  }
+
+  /* 赞、踩 */
+
+  //获取喜欢的答案
+  async listLikingAnswers(ctx) {
+    //populate('following')获取相关信息
+    const user = await User.findById(ctx.params.id)
+      .select("+likingAnswers")
+      .populate("likingAnswers");
+    console.log(user);
+    if (!user) {
+      ctx.throw(404, "用户不存在");
+    }
+    ctx.body = user.likingAnswers;
+  }
+  //喜欢答案
+  async likeAnswer(ctx, next) {
+    const me = await User.findById(ctx.state.user._id).select("+likingAnswers");
+    if (!me.likingAnswers.map((id) => id.toString()).includes(ctx.params.id)) {
+      //如果没有关注过话题 就把新的话题id push到话题组里
+      me.likingAnswers.push(ctx.params.id);
+      me.save();
+      await Answer.findByIdAndUpdate(ctx.params.id, { $inc: { voteCount: 1 } });//投票数+1
+    }
+    ctx.status = 204;
+    await next()
+  }
+
+  //取消赞
+  async unlikeAnswer(ctx) {
+    //populate('following')获取相关信息
+    const me = await User.findById(ctx.state.user._id).select(
+      "+likingAnswers"
+    );
+    const index = me.likingAnswers
+      .map((id) => id.toString())
+      .indexOf(ctx.params.id);
+    if (index > -1) {
+      me.likingAnswers.splice(index, 1);
+      me.save();
+      await Answer.findByIdAndUpdate(ctx.params.id, { $inc: { voteCount: -1 } });//投票数-1
+
+    }
+    ctx.status = 204;
+  }
+
+
+
+  //踩--列表信息
+  async listDisLikingAnswers(ctx) {
+    //populate('following')获取相关信息
+    const user = await User.findById(ctx.params.id)
+      .select("+dislikingAnswers")
+      .populate("dislikingAnswers");
+    console.log(user);
+    if (!user) {
+      ctx.throw(404, "用户不存在");
+    }
+    ctx.body = user.dislikingAnswers;
+  }
+  //踩--答案
+  async disLikeAnswer(ctx, next) {
+    const me = await User.findById(ctx.state.user._id).select("+dislikingAnswers");
+    if (!me.dislikingAnswers.map((id) => id.toString()).includes(ctx.params.id)) {
+      //如果没有关注过话题 就把新的话题id push到话题组里
+      me.dislikingAnswers.push(ctx.params.id);
+      me.save();
+    }
+    ctx.status = 204;
+    await next()
+
+  }
+
+  //取消--踩
+  async undisLikeAnswer(ctx) {
+    //populate('following')获取相关信息
+    const me = await User.findById(ctx.state.user._id).select(
+      "+dislikingAnswers"
+    );
+    const index = me.dislikingAnswers
+      .map((id) => id.toString())
+      .indexOf(ctx.params.id);
+    if (index > -1) {
+      me.dislikingAnswers.splice(index, 1);
+      me.save();
+    }
+    ctx.status = 204;
+  }
+
+
+
+  //收藏--答案列表
+  async listCollectingAnswer(ctx) {
+    //populate('following')获取相关信息
+    const user = await User.findById(ctx.params.id)
+      .select("+collectingAnswers")
+      .populate("collectingAnswers");
+    console.log(user);
+    if (!user) {
+      ctx.throw(404, "用户不存在");
+    }
+    ctx.body = user.collectingAnswers;
+  }
+  //收藏--答案 collectingAnswers
+  async collectAnswer(ctx,next) {
+    const me = await User.findById(ctx.state.user._id).select("+collectingAnswers");
+    if (!me.collectingAnswers.map((id) => id.toString()).includes(ctx.params.id)) {
+      //如果没有收藏答案 就把新的答案id push到收藏列表组里
+      me.collectingAnswers.push(ctx.params.id);
+      me.save();
+    }
+    ctx.status = 204;
+    await next()
+  }
+  //取消收藏--答案 collectingAnswers
+  async unCollectAnswer(ctx) {
+    //populate('following')获取相关信息
+    const me = await User.findById(ctx.state.user._id).select(
+      "+collectingAnswers"
+    );
+    const index = me.collectingAnswers
+      .map((id) => id.toString())
+      .indexOf(ctx.params.id);
+    if (index > -1) {
+      me.collectingAnswers.splice(index, 1);
+      me.save();
+    }
+    ctx.status = 204;
   }
 }
-
-
 
 module.exports = new UserCtl();
