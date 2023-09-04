@@ -1,6 +1,6 @@
 const Router = require("koa-router");
 const jwt = require("koa-jwt");
-const router = new Router({ prefix: "/questions/:questionId/Comments/:CommentId/comments" }); // prefix 路由前缀
+const router = new Router({ prefix: "/questions/:questionId/answers/:answerId/comments" }); // prefix 路由前缀
 const {
   find,
   findById,
