@@ -7,5 +7,7 @@ const topicsSchema = new Schema({
     name: {type: String, required: true},//名称
     avatar_url: {type: String},
     introduction: {type: String,select:false},//简介
-});
+},{
+    timestamps:true
+  });
 module.exports = model('Topic', topicsSchema);

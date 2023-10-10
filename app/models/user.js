@@ -68,6 +68,8 @@ const userSchema = new Schema({
     type: [{ type: Schema.Types.ObjectId, ref: "Answer" }],
     select: false, //select:false 默认不显示
   }
+},{
+  timestamps:true
 });
 
 module.exports = model("User", userSchema);

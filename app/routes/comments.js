@@ -15,13 +15,13 @@ const { secret } = require("../config");
 //用koa-jwt 中间件 校验拦截
 const auth = jwt({ secret });
 
-//获取所有问题
+//获取所有评论
 router.get("/", find);
 
-//新建问题
+//新建评论
 router.post("/", auth, create);
 
-//查找某个问题
+//查找某个评论
 router.get("/:id", checkCommentExist, findById);
 
 //put更新替换全部数据     patch只替换部分数据

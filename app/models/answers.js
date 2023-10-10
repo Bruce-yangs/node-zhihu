@@ -14,5 +14,7 @@ const answersSchema = new Schema({
     required: true,
     select: false,
   }, //答案回答者用户
+},{
+  timestamps:true
 });
 module.exports = model("Answer", answersSchema);

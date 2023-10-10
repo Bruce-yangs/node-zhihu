@@ -21,13 +21,13 @@ class CommentsCtl {
       ctx.params.questionId &&
       comment.questionId.toString() !== ctx.params.questionId.toString()
     ) {
-      ctx.throw(404, "该问题下没有此答案");
+      ctx.throw(404, "该问题下没有此评论");
     }
     if (
       ctx.params.answerId &&
       comment.answerId.toString() !== ctx.params.answerId.toString()
     ) {
-      ctx.throw(404, "该问题下没有此答案");
+      ctx.throw(404, "该答案下没有此评论");
     }
     ctx.state.comment = comment;
     await next();
@@ -51,15 +51,16 @@ class CommentsCtl {
     const perPage = Math.max(per_page * 1, 1);
 
     const q = new RegExp(ctx.query.q);
-    const { questionId, answerId } = ctx.query.q;
+    const { questionId, answerId } = ctx.params;
+    const { rootCommentId } = ctx.query; //二级接口
     ctx.body = await Comments.find({
       content: q,
-      questionId, answerId
+      questionId, answerId,rootCommentId
     }) //模糊搜索  多项模糊搜索 $or: [{ title: q }, { description: q }]
       // .find({ $or: [{ title: q }, { description: q }] })
       .limit(perPage)
       .skip(pageNum * perPage)
-      .populate("commentator");
+      .populate("commentator replyTo");
   }
 
   //查找某一个问题详情
@@ -89,6 +90,8 @@ class CommentsCtl {
     //统一校验参数 parameter verifyParams
     ctx.verifyParams({
       content: { type: "string", required: true }, //required 默认也为true
+      rootCommentId: { type: "string", required: false },
+      replyTo: { type: "string", required: false },
     });
     // const { title } = ctx.request.body;
     // const repeatedUser = await Comments.findOne({ title });
@@ -98,7 +101,7 @@ class CommentsCtl {
     // }
 
     const commentator = ctx.state.user._id;
-    const { questionId } = ctx.params;
+    const { questionId, answerId } = ctx.params;
     const comment = await new Comments({
       ...ctx.request.body,
       commentator,
@@ -114,7 +117,8 @@ class CommentsCtl {
       content: { type: "string", required: true }, //required 默认也为true
     });
     console.log(ctx.request.body);
-    await ctx.state.comment.update(ctx.request.body);
+    const {content} = ctx.request.body
+    await ctx.state.comment.update({content});
     ctx.body = ctx.state.comment;
   }
 

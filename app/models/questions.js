@@ -9,5 +9,7 @@ const questionSchema = new Schema({
     topics: {type: String},
     questioner: {type: Schema.Types.ObjectId,ref:'User', required: true,select:false},//提问用户
     topics: {type: [{type:Schema.Types.ObjectId,ref:'Topic'}],select:false},//话题
-});
+},{
+    timestamps:true
+  });
 module.exports = model('Question', questionSchema);
