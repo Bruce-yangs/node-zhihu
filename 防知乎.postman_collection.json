@@ -368,12 +368,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/users/login",
-					"protocol": "http",
+					"raw": "{{host}}/users/login",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "3000",
 					"path": [
 						"users",
 						"login"
@@ -1545,6 +1543,162 @@
 						"users",
 						"collectingAnswers",
 						"64f59a7fb6b6c7ac81b7d199"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取评论列表",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "toke",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/questions/642bf9195b458fda2b074e99/answers/6433f7fbb9160576045a68c8/comments?rootCommentId=651eef1e0a05335a7244a776",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"questions",
+						"642bf9195b458fda2b074e99",
+						"answers",
+						"6433f7fbb9160576045a68c8",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "rootCommentId",
+							"value": "651eef1e0a05335a7244a776"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "获取评论列表",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "toke",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/questions/642bf9195b458fda2b074e99/answers/6433f7fbb9160576045a68c8/comments?rootCommentId=651eef1e0a05335a7244a776",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"questions",
+								"642bf9195b458fda2b074e99",
+								"answers",
+								"6433f7fbb9160576045a68c8",
+								"comments"
+							],
+							"query": [
+								{
+									"key": "rootCommentId",
+									"value": "651eef1e0a05335a7244a776"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1102"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 09 Oct 2023 10:29:19 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"_id\": \"6523d0a9b28fba01f0554e7d\",\n        \"content\": \"马屁精啊\",\n        \"rootCommentId\": \"651eef1e0a05335a7244a776\",\n        \"replyTo\": {\n            \"gender\": \"male\",\n            \"_id\": \"64183ae8d946472b0caff83c\",\n            \"name\": \"美女1\"\n        },\n        \"commentator\": {\n            \"gender\": \"male\",\n            \"_id\": \"64183ae8d946472b0caff83c\",\n            \"name\": \"美女1\"\n        },\n        \"questionId\": \"642bf9195b458fda2b074e99\",\n        \"answerId\": \"6433f7fbb9160576045a68c8\"\n    },\n    {\n        \"_id\": \"6523d485b28fba01f0554e88\",\n        \"content\": \"hhh哈哈哈\",\n        \"rootCommentId\": \"651eef1e0a05335a7244a776\",\n        \"replyTo\": {\n            \"gender\": \"male\",\n            \"_id\": \"64183ae8d946472b0caff83c\",\n            \"name\": \"美女1\"\n        },\n        \"commentator\": {\n            \"gender\": \"male\",\n            \"_id\": \"64183ae8d946472b0caff83c\",\n            \"name\": \"美女1\"\n        },\n        \"questionId\": \"642bf9195b458fda2b074e99\",\n        \"answerId\": \"6433f7fbb9160576045a68c8\"\n    },\n    {\n        \"_id\": \"6523d5f2ff6abd04c20ffd47\",\n        \"content\": \"苹果真酸\",\n        \"rootCommentId\": \"651eef1e0a05335a7244a776\",\n        \"replyTo\": {\n            \"gender\": \"male\",\n            \"_id\": \"64183ae8d946472b0caff83c\",\n            \"name\": \"美女1\"\n        },\n        \"commentator\": {\n            \"gender\": \"male\",\n            \"_id\": \"64183ae8d946472b0caff83c\",\n            \"name\": \"美女1\"\n        },\n        \"questionId\": \"642bf9195b458fda2b074e99\",\n        \"answerId\": \"6433f7fbb9160576045a68c8\",\n        \"createdAt\": \"2023-10-09T10:29:06.085Z\",\n        \"updatedAt\": \"2023-10-09T10:29:06.085Z\"\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "新建评论",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"content\":\"苹果真酸\",\n    \"rootCommentId\":\"651eef1e0a05335a7244a776\",\n    \"replyTo\":\"64183ae8d946472b0caff83c\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/questions/642bf9195b458fda2b074e99/answers/6433f7fbb9160576045a68c8/comments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"questions",
+						"642bf9195b458fda2b074e99",
+						"answers",
+						"6433f7fbb9160576045a68c8",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "content",
+							"value": "麻辣烫",
+							"disabled": true
+						}
 					]
 				}
 			},
